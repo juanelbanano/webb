@@ -3,61 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechLog - Gestión de Encomiendas</title>
+    <title>TechLog - Sistema Profesional de Encomiendas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navbar mejorada con animación -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="index.html">
+            <a class="navbar-brand" href="index.html">
                 <i class="bi bi-box-seam me-2"></i>TechLog
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="#features">Características</a>
-                    <a class="nav-link" href="#about">Acerca de</a>
-                    <a class="nav-link" href="#documents">Documentos y Recursos</a>
-                    <a class="nav-link btn btn-outline-light ms-2 px-3" href="login.html">Iniciar Sesión</a>
-                    <a class="nav-link btn btn-light ms-2 px-3 text-primary" href="register.html">Registrarse</a>
+                <div class="navbar-nav ms-auto align-items-center">
+                    <a class="nav-link" href="#features">Servicios</a>
+                    <a class="nav-link" href="#tracking">Rastrear</a>
+                    <a class="nav-link" href="#about">Nosotros</a>
+                    <a class="nav-link btn btn-outline-light ms-lg-3 px-4" href="login.html">Ingresar</a>
+                    <a class="nav-link btn btn-warning ms-2 px-4 text-dark" href="register.html">Registrarse</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero section completamente rediseñada con más contenido visual -->
-    <div class="hero-section">
+    <!-- Hero Section -->
+    <section class="hero-section">
         <div class="container">
-            <div class="row align-items-center min-vh-100">
+            <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="hero-content">
-                        <h1 class="display-3 fw-bold mb-4 text-white">
-                            Gestiona tus <span class="text-warning">Encomiendas</span> de forma inteligente
+                        <span class="badge bg-warning text-dark mb-3 px-3 py-2">
+                            <i class="bi bi-lightning-charge me-1"></i> Entregas en tiempo real
+                        </span>
+                        <h1 class="text-white mb-4">
+                            Envios seguros con <span style="color: #fbbf24;">seguimiento inteligente</span>
                         </h1>
-                        <p class="lead mb-4 text-white-50">
-                            Sistema completo y moderno para el control total de paquetes, seguimiento en tiempo real y gestión eficiente de tu negocio de encomiendas.
+                        <p class="lead text-white-50 mb-4">
+                            Sistema profesional de gestion de encomiendas con tracking en tiempo real, 
+                            estimacion precisa de tiempos de entrega y monitoreo completo del recorrido.
                         </p>
-                        <div class="d-flex flex-wrap gap-3 mb-4">
-                            <a href="login.html" class="btn btn-warning btn-lg px-4 py-3">
-                                <i class="bi bi-play-circle me-2"></i>Comenzar Ahora
+                        <div class="d-flex flex-wrap gap-3 mb-5">
+                            <a href="register.html" class="btn btn-warning btn-lg px-5">
+                                <i class="bi bi-rocket-takeoff me-2"></i>Comenzar Ahora
                             </a>
-                            <a href="#features" class="btn btn-outline-light btn-lg px-4 py-3">
-                                <i class="bi bi-info-circle me-2"></i>Conocer Más
+                            <a href="#tracking" class="btn btn-outline-light btn-lg px-4">
+                                <i class="bi bi-search me-2"></i>Rastrear Envio
                             </a>
                         </div>
-                        <div class="hero-stats d-flex gap-4">
+                        <div class="hero-stats">
                             <div class="stat-item">
-                                <h4 class="text-warning mb-0">500+</h4>
-                                <small class="text-white-50">Encomiendas Gestionadas</small>
+                                <h4 class="text-warning mb-0">2,500+</h4>
+                                <small class="text-white-50">Envios Exitosos</small>
                             </div>
                             <div class="stat-item">
                                 <h4 class="text-warning mb-0">99.8%</h4>
-                                <small class="text-white-50">Tasa de Entrega</small>
+                                <small class="text-white-50">Entregas a Tiempo</small>
                             </div>
                             <div class="stat-item">
                                 <h4 class="text-warning mb-0">24/7</h4>
@@ -66,27 +71,46 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="hero-image text-center">
-                        <div class="floating-card">
-                            <div class="card bg-white shadow-lg border-0">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="bg-primary rounded-circle p-2 me-3">
-                                            <i class="bi bi-box text-white"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0">Encomienda #TL-2024-001</h6>
-                                            <small class="text-muted">En tránsito</small>
-                                        </div>
-                                    </div>
-                                    <div class="progress mb-2" style="height: 8px;">
-                                        <div class="progress-bar bg-warning" style="width: 75%"></div>
-                                    </div>
-                                    <small class="text-success">
-                                        <i class="bi bi-geo-alt-fill me-1"></i>
-                                        Llegará en 2 horas
-                                    </small>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="floating-card">
+                        <div class="tracking-preview-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary rounded-circle p-2 me-3">
+                                    <i class="bi bi-box-seam text-white"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Encomienda #TL-2024-0847</h6>
+                                    <small class="text-success"><i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i>En transito</small>
+                                </div>
+                            </div>
+                            
+                            <div class="route-visualization mb-4" style="height: 80px;">
+                                <div class="route-path">
+                                    <div class="route-progress" style="width: 65%;"></div>
+                                </div>
+                                <div class="route-point origin">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+                                <div class="route-point current" style="left: 55%;">
+                                    <i class="bi bi-truck"></i>
+                                </div>
+                                <div class="route-point destination">
+                                    <i class="bi bi-flag-fill"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Origen</small>
+                                    <strong>Lima</strong>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Tiempo Est.</small>
+                                    <strong class="text-success">2h 30min</strong>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Destino</small>
+                                    <strong>Arequipa</strong>
                                 </div>
                             </div>
                         </div>
@@ -94,55 +118,56 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Sección de características mejorada con iconos y animaciones -->
-    <section id="features" class="py-5 bg-light">
-        <div class="container">
+    <!-- Features Section -->
+    <section id="features" class="py-5 bg-white">
+        <div class="container py-4">
             <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold mb-3">¿Por qué elegir TechLog?</h2>
-                <p class="lead text-muted">Descubre las características que hacen de TechLog la mejor opción</p>
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 mb-3">Nuestros Servicios</span>
+                <h2 class="display-5 fw-bold mb-3">Por que elegir TechLog?</h2>
+                <p class="lead text-muted">Tecnologia de punta para tus envios</p>
             </div>
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
-                    <div class="feature-card-new text-center h-100">
-                        <div class="feature-icon mb-4">
-                            <i class="bi bi-shield-check display-4 text-success"></i>
+                    <div class="feature-card-new">
+                        <div class="feature-icon">
+                            <i class="bi bi-geo-alt text-primary"></i>
                         </div>
-                        <h4 class="mb-3">Seguridad Total</h4>
-                        <p class="text-muted">Seguimiento completo y seguro de todas tus encomiendas con tecnología de punta.</p>
+                        <h4 class="mb-3">Tracking en Tiempo Real</h4>
+                        <p class="text-muted mb-4">Conoce la ubicacion exacta de tu encomienda en todo momento con actualizaciones cada minuto.</p>
                         <ul class="list-unstyled text-start">
-                            <li><i class="bi bi-check text-success me-2"></i>Encriptación de datos</li>
-                            <li><i class="bi bi-check text-success me-2"></i>Backup automático</li>
-                            <li><i class="bi bi-check text-success me-2"></i>Acceso controlado</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>GPS de alta precision</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Notificaciones automaticas</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Historial completo</li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
-                    <div class="feature-card-new text-center h-100">
-                        <div class="feature-icon mb-4">
-                            <i class="bi bi-lightning-charge display-4 text-warning"></i>
+                    <div class="feature-card-new">
+                        <div class="feature-icon">
+                            <i class="bi bi-clock-history text-warning"></i>
                         </div>
-                        <h4 class="mb-3">Velocidad Extrema</h4>
-                        <p class="text-muted">Gestión ultrarrápida y eficiente con actualizaciones en tiempo real.</p>
+                        <h4 class="mb-3">Tiempo Estimado Preciso</h4>
+                        <p class="text-muted mb-4">Algoritmo inteligente que calcula el tiempo de llegada basado en distancia y condiciones.</p>
                         <ul class="list-unstyled text-start">
-                            <li><i class="bi bi-check text-success me-2"></i>Interfaz optimizada</li>
-                            <li><i class="bi bi-check text-success me-2"></i>Carga instantánea</li>
-                            <li><i class="bi bi-check text-success me-2"></i>Sincronización automática</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Calculo automatico</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Actualizacion dinamica</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Alta precision</li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
-                    <div class="feature-card-new text-center h-100">
-                        <div class="feature-icon mb-4">
-                            <i class="bi bi-people display-4 text-info"></i>
+                    <div class="feature-card-new">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check text-success"></i>
                         </div>
-                        <h4 class="mb-3">Confianza Absoluta</h4>
-                        <p class="text-muted">Sistema robusto y confiable respaldado por años de experiencia.</p>
+                        <h4 class="mb-3">Seguridad Garantizada</h4>
+                        <p class="text-muted mb-4">Tus envios estan protegidos con nuestro sistema de seguridad de ultima generacion.</p>
                         <ul class="list-unstyled text-start">
-                            <li><i class="bi bi-check text-success me-2"></i>99.9% uptime</li>
-                            <li><i class="bi bi-check text-success me-2"></i>Soporte 24/7</li>
-                            <li><i class="bi bi-check text-success me-2"></i>Actualizaciones constantes</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Seguro incluido</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Verificacion de entrega</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Soporte 24/7</li>
                         </ul>
                     </div>
                 </div>
@@ -150,90 +175,132 @@
         </div>
     </section>
 
-    <!-- Nueva sección de estadísticas con diseño moderno -->
-    <section class="py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-card">
-                        <i class="bi bi-box-seam display-4 mb-3 text-warning"></i>
-                        <h3 class="display-4 fw-bold counter" data-target="1250">0</h3>
-                        <p class="mb-0">Encomiendas Procesadas</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-card">
-                        <i class="bi bi-people display-4 mb-3 text-warning"></i>
-                        <h3 class="display-4 fw-bold counter" data-target="150">0</h3>
-                        <p class="mb-0">Usuarios Activos</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-card">
-                        <i class="bi bi-geo-alt display-4 mb-3 text-warning"></i>
-                        <h3 class="display-4 fw-bold counter" data-target="25">0</h3>
-                        <p class="mb-0">Ciudades Cubiertas</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-card">
-                        <i class="bi bi-award display-4 mb-3 text-warning"></i>
-                        <h3 class="display-4 fw-bold">99.8<span class="fs-3">%</span></h3>
-                        <p class="mb-0">Satisfacción del Cliente</p>
+    <!-- Tracking Section -->
+    <section id="tracking" class="py-5" style="background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);">
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="text-center mb-4">
+                                <div class="feature-icon mx-auto mb-3">
+                                    <i class="bi bi-search text-primary"></i>
+                                </div>
+                                <h3 class="fw-bold">Rastrea tu Encomienda</h3>
+                                <p class="text-muted">Ingresa el codigo de seguimiento para ver el estado</p>
+                            </div>
+                            <form id="trackingForm" class="row g-3 justify-content-center">
+                                <div class="col-lg-8">
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <i class="bi bi-upc-scan text-muted"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-start-0" id="trackingCode" 
+                                               placeholder="Ej: TL-2024-0001" required>
+                                        <button class="btn btn-primary px-4" type="submit">
+                                            <i class="bi bi-search me-2"></i>Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div id="trackingResult" class="mt-4" style="display: none;">
+                                <!-- Resultados de busqueda aparecen aqui -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Nueva sección sobre nosotros -->
-    <section id="about" class="py-5">
-        <div class="container">
+    <!-- Stats Section -->
+    <section class="py-5 bg-primary">
+        <div class="container py-4">
+            <div class="row text-center text-white">
+                <div class="col-6 col-lg-3 mb-4 mb-lg-0">
+                    <i class="bi bi-box-seam display-4 mb-3 opacity-75"></i>
+                    <h2 class="display-5 fw-bold">2,500+</h2>
+                    <p class="opacity-75">Encomiendas Enviadas</p>
+                </div>
+                <div class="col-6 col-lg-3 mb-4 mb-lg-0">
+                    <i class="bi bi-people display-4 mb-3 opacity-75"></i>
+                    <h2 class="display-5 fw-bold">500+</h2>
+                    <p class="opacity-75">Clientes Satisfechos</p>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <i class="bi bi-geo-alt display-4 mb-3 opacity-75"></i>
+                    <h2 class="display-5 fw-bold">50+</h2>
+                    <p class="opacity-75">Ciudades Cubiertas</p>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <i class="bi bi-award display-4 mb-3 opacity-75"></i>
+                    <h2 class="display-5 fw-bold">99.8%</h2>
+                    <p class="opacity-75">Satisfaccion</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-white">
+        <div class="container py-4">
             <div class="row align-items-center">
-                <div class="col-lg-6 mb-4">
-                    <h2 class="display-5 fw-bold mb-4">Revolucionando la gestión de encomiendas</h2>
-                    <p class="lead mb-4">TechLog nace de la necesidad de modernizar y optimizar el proceso de gestión de encomiendas, ofreciendo una solución integral que combina tecnología avanzada con simplicidad de uso.</p>
-                    <div class="row g-3">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 mb-3">Sobre Nosotros</span>
+                    <h2 class="display-5 fw-bold mb-4">Revolucionando la logistica de encomiendas</h2>
+                    <p class="lead text-muted mb-4">
+                        TechLog nace con la mision de transformar la manera en que se gestionan los envios, 
+                        ofreciendo tecnologia de vanguardia accesible para todos.
+                    </p>
+                    <div class="row g-4">
                         <div class="col-sm-6">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-success rounded-circle p-2 me-3">
-                                    <i class="bi bi-check-lg text-white"></i>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                                        <i class="bi bi-check-lg text-success"></i>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 class="mb-0">Fácil de usar</h6>
-                                    <small class="text-muted">Interfaz intuitiva</small>
+                                <div class="ms-3">
+                                    <h6 class="fw-bold mb-1">Facil de Usar</h6>
+                                    <small class="text-muted">Interfaz intuitiva y moderna</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-info rounded-circle p-2 me-3">
-                                    <i class="bi bi-graph-up text-white"></i>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                                        <i class="bi bi-graph-up text-info"></i>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 class="mb-0">Escalable</h6>
-                                    <small class="text-muted">Crece contigo</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-warning rounded-circle p-2 me-3">
-                                    <i class="bi bi-clock text-white"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-0">Tiempo real</h6>
-                                    <small class="text-muted">Actualizaciones instantáneas</small>
+                                <div class="ms-3">
+                                    <h6 class="fw-bold mb-1">Escalable</h6>
+                                    <small class="text-muted">Crece con tu negocio</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-danger rounded-circle p-2 me-3">
-                                    <i class="bi bi-headset text-white"></i>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                                        <i class="bi bi-lightning text-warning"></i>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 class="mb-0">Soporte 24/7</h6>
+                                <div class="ms-3">
+                                    <h6 class="fw-bold mb-1">Tiempo Real</h6>
+                                    <small class="text-muted">Actualizaciones instantaneas</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                                        <i class="bi bi-headset text-danger"></i>
+                                    </div>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="fw-bold mb-1">Soporte 24/7</h6>
                                     <small class="text-muted">Siempre disponible</small>
                                 </div>
                             </div>
@@ -241,32 +308,32 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="position-relative">
-                        <div class="bg-primary rounded-4 p-4 text-white">
-                            <h4 class="mb-3">Panel de Control</h4>
+                    <div class="card border-0 bg-primary text-white">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Vista Previa del Dashboard</h4>
                             <div class="row g-3">
                                 <div class="col-6">
-                                    <div class="bg-white bg-opacity-10 rounded p-3 text-center">
-                                        <i class="bi bi-box display-6 text-warning"></i>
-                                        <h5 class="mt-2 mb-0">Encomiendas</h5>
+                                    <div class="bg-white bg-opacity-10 rounded-3 p-3 text-center">
+                                        <i class="bi bi-box-seam display-6 mb-2"></i>
+                                        <h6 class="mb-0">Encomiendas</h6>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="bg-white bg-opacity-10 rounded p-3 text-center">
-                                        <i class="bi bi-graph-up display-6 text-success"></i>
-                                        <h5 class="mt-2 mb-0">Reportes</h5>
+                                    <div class="bg-white bg-opacity-10 rounded-3 p-3 text-center">
+                                        <i class="bi bi-geo-alt display-6 mb-2"></i>
+                                        <h6 class="mb-0">Tracking</h6>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="bg-white bg-opacity-10 rounded p-3 text-center">
-                                        <i class="bi bi-people display-6 text-info"></i>
-                                        <h5 class="mt-2 mb-0">Usuarios</h5>
+                                    <div class="bg-white bg-opacity-10 rounded-3 p-3 text-center">
+                                        <i class="bi bi-graph-up display-6 mb-2"></i>
+                                        <h6 class="mb-0">Reportes</h6>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="bg-white bg-opacity-10 rounded p-3 text-center">
-                                        <i class="bi bi-gear display-6 text-warning"></i>
-                                        <h5 class="mt-2 mb-0">Configuración</h5>
+                                    <div class="bg-white bg-opacity-10 rounded-3 p-3 text-center">
+                                        <i class="bi bi-people display-6 mb-2"></i>
+                                        <h6 class="mb-0">Usuarios</h6>
                                     </div>
                                 </div>
                             </div>
@@ -277,504 +344,116 @@
         </div>
     </section>
 
-    <!-- Nueva sección de documentos y recursos -->
-    <section id="documents" class="py-5 bg-light">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold mb-3">Documentos y Recursos</h2>
-                <p class="lead text-muted">Accede a documentación técnica, manuales y recursos de trabajo</p>
-            </div>
-            
-            <!-- Agregando opción para mostrar carpeta completa de Google Drive -->
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <div class="card border-primary">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="bi bi-google text-primary me-2"></i>
-                                Ver Carpeta Completa de Google Drive
-                            </h5>
-                            <p class="card-text text-muted">Accede directamente a todos los documentos en la carpeta de Google Drive</p>
-                            <button class="btn btn-primary" onclick="showGoogleDriveFolder()">
-                                <i class="bi bi-folder2-open me-2"></i>Abrir Carpeta de Google Drive
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Documentos individuales de Google Drive -->
-            <div id="googleDriveDocuments" class="row g-4">
-                <!-- Los documentos de Google Drive se cargarán aquí -->
-            </div>
-            
-            <!-- Agregando iframe para mostrar carpeta embebida -->
-            <div id="googleDriveFolderContainer" class="row g-4" style="display: none;">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">
-                                <i class="bi bi-google text-primary me-2"></i>
-                                Carpeta de Google Drive
-                            </h5>
-                            <button class="btn btn-sm btn-outline-secondary" onclick="hideGoogleDriveFolder()">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
-                        </div>
-                        <div class="card-body p-0">
-                            <iframe id="googleDriveFrame" 
-                                    width="100%" 
-                                    height="600" 
-                                    frameborder="0">
-                            </iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-12 text-center" id="noDocumentsMessage">
-                <div class="py-5">
-                    <i class="bi bi-folder2-open display-1 text-muted mb-3"></i>
-                    <h4 class="text-muted">No hay documentos disponibles</h4>
-                    <p class="text-muted">Los documentos de Google Drive aparecerán aquí</p>
-                    <a href="google-drive-setup.html" class="btn btn-primary me-2">
-                        <i class="bi bi-google me-2"></i>Configurar Google Drive
-                    </a>
-                    <a href="login.html" class="btn btn-outline-primary">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
-                    </a>
-                </div>
+    <!-- CTA Section -->
+    <section class="py-5" style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%);">
+        <div class="container py-4 text-center">
+            <h2 class="display-5 fw-bold text-white mb-3">Listo para empezar?</h2>
+            <p class="lead text-white-50 mb-4">Unete a cientos de empresas que confian en TechLog</p>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="register.html" class="btn btn-warning btn-lg px-5">
+                    <i class="bi bi-person-plus me-2"></i>Crear Cuenta Gratis
+                </a>
+                <a href="login.html" class="btn btn-outline-light btn-lg px-5">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesion
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- CTA section mejorada -->
-    <section class="py-5 bg-dark text-white">
-        <div class="container text-center">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <h2 class="display-5 fw-bold mb-4">¿Listo para comenzar?</h2>
-                    <p class="lead mb-4">Únete a cientos de empresas que ya confían en TechLog para gestionar sus encomiendas de manera eficiente.</p>
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <a href="register.html" class="btn btn-warning btn-lg px-5 py-3">
-                            <i class="bi bi-person-plus me-2"></i>Crear Cuenta Gratis
-                        </a>
-                        <a href="login.html" class="btn btn-outline-light btn-lg px-5 py-3">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
-                        </a>
-                    </div>
-                    <p class="mt-3 text-muted">
-                        <small>
-                            <i class="bi bi-shield-check me-1"></i>
-                            Sin compromisos • Configuración en minutos • Soporte incluido
-                        </small>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer mejorado -->
-    <footer class="bg-dark text-white py-5">
+    <!-- Footer -->
+    <footer class="py-4">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <h5 class="fw-bold mb-3">
-                        <i class="bi bi-box-seam me-2"></i>TechLog
-                    </h5>
-                    <p class="text-muted">Sistema integral de gestión de encomiendas diseñado para optimizar tu negocio.</p>
-                    <div class="d-flex gap-3">
-                        <a href="#" class="text-white-50"><i class="bi bi-facebook fs-5"></i></a>
-                        <a href="#" class="text-white-50"><i class="bi bi-twitter fs-5"></i></a>
-                        <a href="#" class="text-white-50"><i class="bi bi-instagram fs-5"></i></a>
-                        <a href="#" class="text-white-50"><i class="bi bi-linkedin fs-5"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">Producto</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#features" class="text-white-50 text-decoration-none">Características</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none">Precios</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none">Demo</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">Soporte</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white-50 text-decoration-none">Ayuda</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none">Contacto</a></li>
-                        <li><a href="#" class="text-white-50 text-decoration-none">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <h6 class="fw-bold mb-3">Contacto</h6>
-                    <p class="text-muted mb-2">
-                        <i class="bi bi-envelope me-2"></i>
-                        info@techlog.com
-                    </p>
-                    <p class="text-muted mb-2">
-                        <i class="bi bi-telephone me-2"></i>
-                        +1 (555) 123-4567
-                    </p>
-                    <p class="text-muted">
-                        <i class="bi bi-geo-alt me-2"></i>
-                        123 Tech Street, Digital City
-                    </p>
-                </div>
-            </div>
-            <hr class="my-4">
             <div class="row align-items-center">
-                <div class="col-md-6">
-                    <!-- Actualizando copyright de 2024 a 2025 -->
-                    <p class="mb-0 text-muted">&copy; 2025 TechLog. Todos los derechos reservados.</p>
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <span class="text-white-50">2024 TechLog. Todos los derechos reservados.</span>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="#" class="text-white-50 text-decoration-none me-3">Privacidad</a>
-                    <a href="#" class="text-white-50 text-decoration-none">Términos</a>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white-50 me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white-50 me-3"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-white-50 me-3"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white-50"><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Script para animaciones y efectos -->
+    <script src="app.js"></script>
     <script>
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Counter animation
-        function animateCounters() {
-            const counters = document.querySelectorAll('.counter');
-            counters.forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-target'));
-                const increment = target / 100;
-                let current = 0;
-                
-                const updateCounter = () => {
-                    if (current < target) {
-                        current += increment;
-                        counter.textContent = Math.ceil(current);
-                        setTimeout(updateCounter, 20);
-                    } else {
-                        counter.textContent = target;
-                    }
-                };
-                updateCounter();
-            });
-        }
-
-        // Trigger counter animation when section is visible
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
-
-        const statsSection = document.querySelector('.bg-primary');
-        if (statsSection) {
-            observer.observe(statsSection);
-        }
-
-        // Add floating animation to hero card
-        const floatingCard = document.querySelector('.floating-card');
-        if (floatingCard) {
-            setInterval(() => {
-                floatingCard.style.transform = 'translateY(' + Math.sin(Date.now() / 1000) * 10 + 'px)';
-            }, 50);
-        }
-
-        function loadDynamicDocuments() {
-            const storedFileSystem = localStorage.getItem("fileSystem");
-            const container = document.getElementById("dynamicDocuments");
-            const noDocsMessage = document.getElementById("noDocumentsMessage");
+        // Tracking form en landing page
+        document.getElementById('trackingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const code = document.getElementById('trackingCode').value.trim().toUpperCase();
+            const resultDiv = document.getElementById('trackingResult');
             
-            if (!storedFileSystem) {
-                if (noDocsMessage) noDocsMessage.style.display = 'block';
-                return;
-            }
+            // Buscar en localStorage
+            const storedParcels = localStorage.getItem('parcels');
+            let parcels = storedParcels ? JSON.parse(storedParcels) : [];
             
-            const fileSystem = JSON.parse(storedFileSystem);
+            const parcel = parcels.find(p => p.trackingCode === code);
             
-            if (!container || !fileSystem.files || fileSystem.files.length === 0) {
-                if (noDocsMessage) noDocsMessage.style.display = 'block';
-                return;
-            }
-            
-            if (noDocsMessage) noDocsMessage.style.display = 'none';
-            
-            // Mostrar solo los primeros 6 archivos más recientes
-            const recentFiles = fileSystem.files
-                .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt))
-                .slice(0, 6);
-            
-            const documentsHtml = recentFiles.map(file => {
-                const iconClass = getFileIconForIndex(file.type);
-                const colorClass = getColorClassForIndex(file.type);
-                
-                return `
-                    <div class="col-lg-4 col-md-6">
-                        <div class="document-card h-100">
-                            <div class="document-icon">
-                                <i class="bi ${iconClass} ${colorClass}"></i>
+            if (parcel) {
+                const statusInfo = getStatusInfo(parcel.status);
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <div class="card border-0 bg-light">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-1">${parcel.trackingCode}</h5>
+                                    <span class="status-badge ${statusInfo.class}">
+                                        <i class="bi ${statusInfo.icon}"></i> ${parcel.status}
+                                    </span>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted d-block">Tiempo Estimado</small>
+                                    <strong class="text-success fs-5">${parcel.estimatedTime || 'Calculando...'}</strong>
+                                </div>
                             </div>
-                            <div class="document-content">
-                                <h5 class="mb-2">${file.name}</h5>
-                                <p class="text-muted mb-3">Documento subido por ${file.uploadedBy}</p>
-                                <div class="document-meta mb-3">
-                                    <small class="text-muted">
-                                        <i class="bi bi-calendar me-1"></i>Subido: ${formatDate(file.uploadedAt)}
-                                    </small>
-                                    <small class="text-muted ms-3">
-                                        <i class="bi bi-file-text me-1"></i>${file.size}
-                                    </small>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block">Origen</small>
+                                    <strong><i class="bi bi-geo-alt me-1 text-primary"></i>${parcel.origin}</strong>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn ${colorClass.replace('text-', 'btn-')} btn-sm" onclick="viewFileFromIndex('${file.id}')">
-                                        <i class="bi bi-eye me-1"></i>Ver
-                                    </button>
-                                    <button class="btn btn-outline${colorClass.replace('text', '')} btn-sm" onclick="downloadFileFromIndex('${file.id}')">
-                                        <i class="bi bi-download me-1"></i>Descargar
-                                    </button>
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block">Destino</small>
+                                    <strong><i class="bi bi-flag me-1 text-success"></i>${parcel.destination}</strong>
                                 </div>
+                                <div class="col-12">
+                                    <small class="text-muted d-block">Descripcion</small>
+                                    <span>${parcel.description}</span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="text-center">
+                                <a href="login.html" class="btn btn-primary">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesion para ver mas detalles
+                                </a>
                             </div>
                         </div>
                     </div>
                 `;
-            }).join('');
-            
-            container.innerHTML = documentsHtml;
-        }
-        
-        function getFileIconForIndex(type) {
-            const icons = {
-                pdf: "bi-file-earmark-pdf",
-                excel: "bi-file-earmark-excel", 
-                word: "bi-file-earmark-word",
-                image: "bi-file-earmark-image",
-                document: "bi-file-earmark"
-            };
-            return icons[type] || icons.document;
-        }
-        
-        function getColorClassForIndex(type) {
-            const colors = {
-                pdf: "text-danger",
-                excel: "text-success",
-                word: "text-primary", 
-                image: "text-info",
-                document: "text-secondary"
-            };
-            return colors[type] || colors.document;
-        }
-        
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('es-ES', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
-            });
-        }
-        
-        function viewFileFromIndex(fileId) {
-            const storedFileSystem = localStorage.getItem("fileSystem");
-            if (!storedFileSystem) return;
-            
-            const fileSystem = JSON.parse(storedFileSystem);
-            const file = fileSystem.files.find(f => f.id === fileId);
-            
-            if (file && file.content) {
-                // Crear un blob con el contenido del archivo
-                const blob = new Blob([file.content], { type: file.mimeType || 'application/octet-stream' });
-                const url = URL.createObjectURL(blob);
-                window.open(url, '_blank');
-                
-                // Limpiar la URL después de un tiempo
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
             } else {
-                alert(`No se puede abrir el archivo: ${file ? file.name : 'Archivo no encontrado'}`);
-            }
-        }
-        
-        function downloadFileFromIndex(fileId) {
-            const storedFileSystem = localStorage.getItem("fileSystem");
-            if (!storedFileSystem) return;
-            
-            const fileSystem = JSON.parse(storedFileSystem);
-            const file = fileSystem.files.find(f => f.id === fileId);
-            
-            if (file && file.content) {
-                // Crear un blob con el contenido del archivo
-                const blob = new Blob([file.content], { type: file.mimeType || 'application/octet-stream' });
-                const url = URL.createObjectURL(blob);
-                
-                // Crear elemento de descarga
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = file.name;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                // Limpiar la URL
-                URL.revokeObjectURL(url);
-            } else {
-                alert(`No se puede descargar el archivo: ${file ? file.name : 'Archivo no encontrado'}`);
-            }
-        }
-
-        function loadGoogleDriveDocuments() {
-            const storedDriveFiles = localStorage.getItem("googleDriveFiles");
-            const container = document.getElementById("googleDriveDocuments");
-            const noDocsMessage = document.getElementById("noDocumentsMessage");
-            
-            if (!storedDriveFiles) {
-                if (noDocsMessage) noDocsMessage.style.display = 'block';
-                return;
-            }
-            
-            const driveFiles = JSON.parse(storedDriveFiles);
-            
-            if (!container || !driveFiles || driveFiles.length === 0) {
-                if (noDocsMessage) noDocsMessage.style.display = 'block';
-                return;
-            }
-            
-            if (noDocsMessage) noDocsMessage.style.display = 'none';
-            
-            const documentsHtml = driveFiles.map(file => {
-                const iconClass = getGoogleDriveIcon(file.type);
-                const colorClass = getGoogleDriveColor(file.type);
-                
-                return `
-                    <div class="col-lg-4 col-md-6">
-                        <div class="document-card h-100">
-                            <div class="document-icon">
-                                <i class="bi ${iconClass} ${colorClass}"></i>
-                            </div>
-                            <div class="document-content">
-                                <h5 class="mb-2">${file.name}</h5>
-                                <p class="text-muted mb-3">${file.description || 'Documento de Google Drive'}</p>
-                                <div class="document-meta mb-3">
-                                    <small class="text-muted">
-                                        <i class="bi bi-calendar me-1"></i>Agregado: ${formatDate(file.dateAdded)}
-                                    </small>
-                                    <small class="text-muted ms-3">
-                                        <i class="bi bi-google me-1"></i>Google Drive
-                                    </small>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn ${colorClass.replace('text-', 'btn-')} btn-sm" onclick="viewGoogleDriveFile('${file.viewUrl}')">
-                                        <i class="bi bi-eye me-1"></i>Ver
-                                    </button>
-                                    <button class="btn btn-outline${colorClass.replace('text', '')} btn-sm" onclick="downloadGoogleDriveFile('${file.downloadUrl}', '${file.name}')">
-                                        <i class="bi bi-download me-1"></i>Descargar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        No se encontro ninguna encomienda con el codigo <strong>${code}</strong>
                     </div>
                 `;
-            }).join('');
-            
-            container.innerHTML = documentsHtml;
-        }
-        
-        function getGoogleDriveIcon(type) {
-            const icons = {
-                'application/pdf': "bi-file-earmark-pdf",
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': "bi-file-earmark-excel",
-                'application/vnd.ms-excel': "bi-file-earmark-excel",
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': "bi-file-earmark-word",
-                'application/msword': "bi-file-earmark-word",
-                'image/jpeg': "bi-file-earmark-image",
-                'image/png': "bi-file-earmark-image",
-                'image/gif': "bi-file-earmark-image"
-            };
-            return icons[type] || "bi-file-earmark";
-        }
-        
-        function getGoogleDriveColor(type) {
-            const colors = {
-                'application/pdf': "text-danger",
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': "text-success",
-                'application/vnd.ms-excel': "text-success",
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': "text-primary",
-                'application/msword': "text-primary",
-                'image/jpeg': "text-info",
-                'image/png': "text-info",
-                'image/gif': "text-info"
-            };
-            return colors[type] || "text-secondary";
-        }
-        
-        function viewGoogleDriveFile(viewUrl) {
-            if (viewUrl) {
-                window.open(viewUrl, '_blank');
-            } else {
-                alert('URL de visualización no disponible');
             }
-        }
-        
-        function downloadGoogleDriveFile(downloadUrl, fileName) {
-            if (downloadUrl) {
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = fileName;
-                a.target = '_blank';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } else {
-                alert('URL de descarga no disponible');
-            }
-        }
-
-        function showGoogleDriveFolder() {
-            // Tu enlace de carpeta de Google Drive
-            const folderUrl = "https://drive.google.com/drive/folders/1i7uUPVn-iEKfVJ5EU-24YcyZ3Z-VNN1d?usp=sharing";
-            
-            // Convertir a URL embebible
-            const embedUrl = folderUrl.replace('/drive/folders/', '/embeddedfolderview?id=').replace('?usp=sharing', '#grid');
-            
-            // Mostrar el iframe
-            const container = document.getElementById('googleDriveFolderContainer');
-            const frame = document.getElementById('googleDriveFrame');
-            const noDocsMessage = document.getElementById('noDocumentsMessage');
-            
-            frame.src = embedUrl;
-            container.style.display = 'block';
-            if (noDocsMessage) noDocsMessage.style.display = 'none';
-            
-            // Scroll suave hacia la carpeta
-            container.scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function hideGoogleDriveFolder() {
-            const container = document.getElementById('googleDriveFolderContainer');
-            const frame = document.getElementById('googleDriveFrame');
-            
-            container.style.display = 'none';
-            frame.src = '';
-            
-            // Mostrar mensaje si no hay documentos individuales
-            loadGoogleDriveDocuments();
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDynamicDocuments();
-            loadGoogleDriveDocuments();
         });
+        
+        function getStatusInfo(status) {
+            const statusMap = {
+                'Procesando': { class: 'status-procesando', icon: 'bi-hourglass-split' },
+                'Recolectado': { class: 'status-recolectado', icon: 'bi-box-seam' },
+                'En Transito': { class: 'status-entransito', icon: 'bi-truck' },
+                'En Reparto': { class: 'status-enreparto', icon: 'bi-bicycle' },
+                'Entregado': { class: 'status-entregado', icon: 'bi-check-circle-fill' }
+            };
+            return statusMap[status] || statusMap['Procesando'];
+        }
     </script>
 </body>
 </html>
