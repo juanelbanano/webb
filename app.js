@@ -1,4 +1,40 @@
-// Simulación de base de datos local
+// ============================================
+// TECHLOG - Sistema de Gestion de Encomiendas
+// ============================================
+
+// Base de datos simulada con distancias entre ciudades (en km)
+const cityDistances = {
+  "Lima-Arequipa": 1020,
+  "Lima-Trujillo": 560,
+  "Lima-Chiclayo": 770,
+  "Lima-Cusco": 1105,
+  "Lima-Piura": 980,
+  "Lima-Iquitos": 1010,
+  "Lima-Huancayo": 300,
+  "Lima-Tacna": 1290,
+  "Lima-Puno": 1310,
+  "Arequipa-Cusco": 485,
+  "Arequipa-Tacna": 370,
+  "Arequipa-Puno": 280,
+  "Trujillo-Chiclayo": 210,
+  "Trujillo-Piura": 410,
+  "Cusco-Puno": 390,
+  "Chiclayo-Piura": 220,
+}
+
+// Velocidad promedio de transporte (km/h)
+const AVERAGE_SPEED = 60
+
+// Estados de las encomiendas con iconos y progreso
+const parcelStatuses = {
+  Procesando: { icon: "bi-hourglass-split", progress: 10, color: "info" },
+  Recolectado: { icon: "bi-box-seam", progress: 25, color: "purple" },
+  "En Transito": { icon: "bi-truck", progress: 50, color: "warning" },
+  "En Reparto": { icon: "bi-bicycle", progress: 75, color: "pink" },
+  Entregado: { icon: "bi-check-circle-fill", progress: 100, color: "success" },
+}
+
+// Datos iniciales
 let users = [
   { id: 1, name: "Administrador", email: "admin@techlog.com", password: "admin123", role: "admin" },
   { id: 2, name: "Usuario Demo", email: "user@demo.com", password: "demo123", role: "user" },
@@ -7,76 +43,95 @@ let users = [
 let parcels = [
   {
     id: 1,
-    recipient: "Juan Pérez",
+    trackingCode: "TL-2024-0001",
+    description: "Documentos importantes",
+    sender: "Empresa ABC",
+    recipient: "Juan Perez",
+    origin: "Lima",
+    destination: "Arequipa",
     address: "Av. Principal 123",
     weight: 2.5,
-    status: "Entregado",
+    status: "En Transito",
     userId: 2,
+    estimatedTime: "17h 00min",
+    distance: 1020,
+    progress: 50,
     createdAt: "2024-01-15",
+    timeline: [
+      { status: "Procesando", date: "2024-01-15 09:00", location: "Lima - Centro de Operaciones" },
+      { status: "Recolectado", date: "2024-01-15 11:00", location: "Lima - Almacen Central" },
+      { status: "En Transito", date: "2024-01-15 14:00", location: "En camino a Arequipa" },
+    ],
   },
   {
     id: 2,
-    recipient: "María García",
+    trackingCode: "TL-2024-0002",
+    description: "Equipo electronico",
+    sender: "Tech Store",
+    recipient: "Maria Garcia",
+    origin: "Trujillo",
+    destination: "Chiclayo",
     address: "Calle Secundaria 456",
     weight: 1.2,
-    status: "En Tránsito",
+    status: "Entregado",
     userId: 2,
-    createdAt: "2024-01-16",
-  },
-  {
-    id: 3,
-    recipient: "Carlos López",
-    address: "Plaza Central 789",
-    weight: 3.8,
-    status: "Procesando",
-    userId: 2,
-    createdAt: "2024-01-17",
+    estimatedTime: "3h 30min",
+    distance: 210,
+    progress: 100,
+    createdAt: "2024-01-14",
+    timeline: [
+      { status: "Procesando", date: "2024-01-14 08:00", location: "Trujillo - Centro de Operaciones" },
+      { status: "Recolectado", date: "2024-01-14 10:00", location: "Trujillo - Almacen" },
+      { status: "En Transito", date: "2024-01-14 12:00", location: "En camino a Chiclayo" },
+      { status: "En Reparto", date: "2024-01-14 14:30", location: "Chiclayo - Centro de Distribucion" },
+      { status: "Entregado", date: "2024-01-14 16:00", location: "Entregado en direccion" },
+    ],
   },
 ]
 
-let fileSystem = {
-  folders: [
-    { id: 1, name: "Documentos", parentId: null, createdAt: "2024-01-15" },
-    { id: 2, name: "Reportes", parentId: null, createdAt: "2024-01-16" },
-    { id: 3, name: "Contratos", parentId: 1, createdAt: "2024-01-17" },
-  ],
-  files: [
-    {
-      id: 1,
-      name: "Manual_Usuario.pdf",
-      folderId: 1,
-      size: "2.5 MB",
-      type: "pdf",
-      uploadedAt: "2024-01-15",
-      uploadedBy: "admin@techlog.com",
-    },
-    {
-      id: 2,
-      name: "Reporte_Mensual.xlsx",
-      folderId: 2,
-      size: "1.2 MB",
-      type: "excel",
-      uploadedAt: "2024-01-16",
-      uploadedBy: "admin@techlog.com",
-    },
-    {
-      id: 3,
-      name: "Contrato_Servicios.docx",
-      folderId: 3,
-      size: "856 KB",
-      type: "word",
-      uploadedAt: "2024-01-17",
-      uploadedBy: "admin@techlog.com",
-    },
-  ],
+let currentUser = null
+let currentFilter = "all"
+
+// ============================================
+// FUNCIONES DE UTILIDAD
+// ============================================
+
+function getDistance(origin, destination) {
+  if (origin === destination) return 0
+
+  const key1 = `${origin}-${destination}`
+  const key2 = `${destination}-${origin}`
+
+  return cityDistances[key1] || cityDistances[key2] || Math.floor(Math.random() * 500 + 200)
 }
 
-let currentFolder = null
-let viewMode = "list"
+function calculateEstimatedTime(distance) {
+  const hours = distance / AVERAGE_SPEED
+  const totalMinutes = Math.round(hours * 60)
+  const h = Math.floor(totalMinutes / 60)
+  const m = totalMinutes % 60
+  return `${h}h ${m.toString().padStart(2, "0")}min`
+}
 
-let currentUser = null
+function generateTrackingCode() {
+  const year = new Date().getFullYear()
+  const num = String(parcels.length + 1).padStart(4, "0")
+  return `TL-${year}-${num}`
+}
 
-// Funciones de autenticación
+function getStatusInfo(status) {
+  return parcelStatuses[status] || parcelStatuses["Procesando"]
+}
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" })
+}
+
+// ============================================
+// AUTENTICACION
+// ============================================
+
 function login(email, password) {
   const user = users.find((u) => u.email === email && u.password === password)
   if (user) {
@@ -89,7 +144,7 @@ function login(email, password) {
 
 function register(name, email, password) {
   if (users.find((u) => u.email === email)) {
-    return false // Usuario ya existe
+    return false
   }
 
   const newUser = {
@@ -120,339 +175,396 @@ function checkAuth() {
   return false
 }
 
-// Funciones de encomiendas
-function createParcel(recipient, address, weight, status) {
+// ============================================
+// GESTION DE ENCOMIENDAS
+// ============================================
+
+function createParcel(data) {
   if (!currentUser) return false
+
+  const distance = getDistance(data.origin, data.destination)
+  const estimatedTime = calculateEstimatedTime(distance)
+  const trackingCode = generateTrackingCode()
 
   const newParcel = {
     id: parcels.length + 1,
-    recipient,
-    address,
-    weight: Number.parseFloat(weight),
-    status,
+    trackingCode,
+    description: data.description,
+    sender: data.sender,
+    recipient: data.recipient,
+    origin: data.origin,
+    destination: data.destination,
+    address: data.address,
+    weight: Number.parseFloat(data.weight),
+    status: "Procesando",
     userId: currentUser.id,
+    estimatedTime,
+    distance,
+    progress: 10,
     createdAt: new Date().toISOString().split("T")[0],
+    timeline: [
+      {
+        status: "Procesando",
+        date: new Date().toLocaleString("es-ES"),
+        location: `${data.origin} - Centro de Operaciones`,
+      },
+    ],
   }
 
   parcels.push(newParcel)
   localStorage.setItem("parcels", JSON.stringify(parcels))
-  return true
+  return newParcel
 }
 
-function getUserParcels() {
+function getUserParcels(filter = "all") {
   if (!currentUser) return []
-  return parcels.filter((p) => p.userId === currentUser.id)
+
+  let userParcels = parcels.filter((p) => p.userId === currentUser.id)
+
+  if (filter === "active") {
+    userParcels = userParcels.filter((p) => p.status !== "Entregado")
+  } else if (filter === "delivered") {
+    userParcels = userParcels.filter((p) => p.status === "Entregado")
+  }
+
+  return userParcels.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 }
+
+function getAllParcels() {
+  return parcels.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+}
+
+function getParcelById(id) {
+  return parcels.find((p) => p.id === id)
+}
+
+function updateParcelStatus(parcelId, newStatus) {
+  const parcel = parcels.find((p) => p.id === parcelId)
+  if (parcel) {
+    parcel.status = newStatus
+    parcel.progress = parcelStatuses[newStatus].progress
+    parcel.timeline.push({
+      status: newStatus,
+      date: new Date().toLocaleString("es-ES"),
+      location: `${newStatus === "Entregado" ? parcel.destination : parcel.origin} - Actualizado`,
+    })
+    localStorage.setItem("parcels", JSON.stringify(parcels))
+    return true
+  }
+  return false
+}
+
+// ============================================
+// RENDERIZADO UI
+// ============================================
 
 function updateStats() {
   const userParcels = getUserParcels()
   const delivered = userParcels.filter((p) => p.status === "Entregado").length
-  const transit = userParcels.filter((p) => p.status === "En Tránsito").length
-  const processing = userParcels.filter((p) => p.status === "Procesando").length
+  const transit = userParcels.filter((p) => p.status === "En Transito" || p.status === "En Reparto").length
+  const processing = userParcels.filter((p) => p.status === "Procesando" || p.status === "Recolectado").length
 
   document.getElementById("totalParcels").textContent = userParcels.length
   document.getElementById("deliveredParcels").textContent = delivered
   document.getElementById("pendingParcels").textContent = transit
   document.getElementById("processingParcels").textContent = processing
+
+  // Stats de admin
+  if (currentUser && currentUser.role === "admin") {
+    document.getElementById("totalUsers").textContent = users.length
+    document.getElementById("totalAllParcels").textContent = parcels.length
+    document.getElementById("activeDeliveries").textContent = parcels.filter((p) => p.status !== "Entregado").length
+  }
 }
 
 function renderParcels() {
   const container = document.getElementById("parcelsList")
   if (!container) return
 
-  const userParcels = getUserParcels()
+  const userParcels = getUserParcels(currentFilter)
 
   if (userParcels.length === 0) {
-    container.innerHTML = '<p class="text-muted">No tienes encomiendas registradas.</p>'
+    container.innerHTML = `
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-box display-1 mb-3"></i>
+                <h5>No hay encomiendas ${currentFilter === "active" ? "activas" : currentFilter === "delivered" ? "entregadas" : ""}</h5>
+                <p>Crea una nueva encomienda para comenzar</p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newParcelModal">
+                    <i class="bi bi-plus-lg me-2"></i>Nueva Encomienda
+                </button>
+            </div>
+        `
     return
   }
 
   container.innerHTML = userParcels
-    .map(
-      (parcel) => `
-        <div class="parcel-item">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h6 class="mb-1">${parcel.recipient}</h6>
-                    <small class="text-muted">${parcel.address}</small>
-                    <br>
-                    <small class="text-muted">${parcel.weight} kg - ${parcel.createdAt}</small>
+    .map((parcel) => {
+      const statusInfo = getStatusInfo(parcel.status)
+      return `
+            <div class="parcel-item" onclick="showParcelDetail(${parcel.id})">
+                <div class="parcel-header">
+                    <div>
+                        <span class="parcel-id">${parcel.trackingCode}</span>
+                        <h6 class="mt-2 mb-1 fw-semibold">${parcel.description}</h6>
+                    </div>
+                    <span class="status-badge status-${parcel.status.toLowerCase().replace(" ", "")}">
+                        <i class="bi ${statusInfo.icon}"></i> ${parcel.status}
+                    </span>
                 </div>
-                <span class="status-badge status-${parcel.status.toLowerCase().replace(" ", "")}">${parcel.status}</span>
+                <div class="parcel-details">
+                    <div class="parcel-detail">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>${parcel.origin} → ${parcel.destination}</span>
+                    </div>
+                    <div class="parcel-detail">
+                        <i class="bi bi-clock"></i>
+                        <span>${parcel.estimatedTime}</span>
+                    </div>
+                    <div class="parcel-detail">
+                        <i class="bi bi-person"></i>
+                        <span>${parcel.recipient}</span>
+                    </div>
+                    <div class="parcel-detail">
+                        <i class="bi bi-calendar"></i>
+                        <span>${formatDate(parcel.createdAt)}</span>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar bg-${statusInfo.color}" style="width: ${parcel.progress}%"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-    `,
-    )
+        `
+    })
     .join("")
 }
 
-function createFolder() {
-  const folderName = document.getElementById("newFolderName").value.trim()
-  if (!folderName) {
-    alert("Por favor ingresa un nombre para la carpeta")
-    return
-  }
+function showParcelDetail(parcelId) {
+  const parcel = getParcelById(parcelId)
+  if (!parcel) return
 
-  const newFolder = {
-    id: fileSystem.folders.length + 1,
-    name: folderName,
-    parentId: currentFolder,
-    createdAt: new Date().toISOString().split("T")[0],
-  }
+  const statusInfo = getStatusInfo(parcel.status)
+  const content = document.getElementById("parcelDetailContent")
 
-  fileSystem.folders.push(newFolder)
-  localStorage.setItem("fileSystem", JSON.stringify(fileSystem))
+  content.innerHTML = `
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center mb-4">
+                    <span class="parcel-id me-3">${parcel.trackingCode}</span>
+                    <span class="status-badge status-${parcel.status.toLowerCase().replace(" ", "")}">
+                        <i class="bi ${statusInfo.icon}"></i> ${parcel.status}
+                    </span>
+                </div>
+                
+                <h5 class="fw-bold mb-3">${parcel.description}</h5>
+                
+                <div class="mb-3">
+                    <small class="text-muted d-block">Remitente</small>
+                    <strong>${parcel.sender}</strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted d-block">Destinatario</small>
+                    <strong>${parcel.recipient}</strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted d-block">Direccion de Entrega</small>
+                    <strong>${parcel.address}</strong>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted d-block">Peso</small>
+                        <strong>${parcel.weight} kg</strong>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Distancia</small>
+                        <strong>${parcel.distance} km</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="estimated-time-card mb-4">
+                    <small class="text-muted">Tiempo Estimado de Entrega</small>
+                    <div class="time-display">${parcel.estimatedTime}</div>
+                    <div class="time-label">${parcel.origin} → ${parcel.destination}</div>
+                </div>
+                
+                <!-- Visualizacion del recorrido -->
+                <div class="map-container mb-4">
+                    <div class="route-visualization">
+                        <div class="route-path">
+                            <div class="route-progress" style="width: ${parcel.progress}%;"></div>
+                        </div>
+                        <div class="route-point origin">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        ${
+                          parcel.progress > 10 && parcel.progress < 100
+                            ? `
+                            <div class="route-point current" style="left: ${parcel.progress}%;">
+                                <i class="bi bi-truck"></i>
+                            </div>
+                        `
+                            : ""
+                        }
+                        <div class="route-point destination">
+                            <i class="bi bi-flag-fill"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row text-center">
+                    <div class="col-6">
+                        <small class="text-muted d-block">Origen</small>
+                        <strong>${parcel.origin}</strong>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Destino</small>
+                        <strong>${parcel.destination}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2"></i>Historial de Seguimiento</h6>
+        <div class="tracking-timeline">
+            ${parcel.timeline
+              .map((item, index) => {
+                const itemStatusInfo = getStatusInfo(item.status)
+                const isLast = index === parcel.timeline.length - 1
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-dot ${isLast ? "active" : "completed"}">
+                            <i class="bi ${itemStatusInfo.icon}"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <h6 class="mb-1">${item.status}</h6>
+                            <small class="text-muted">${item.date}</small>
+                            <small class="d-block text-muted"><i class="bi bi-geo-alt me-1"></i>${item.location}</small>
+                        </div>
+                    </div>
+                `
+              })
+              .join("")}
+        </div>
+    `
 
-  document.getElementById("newFolderName").value = ""
-  updateFolderSelect()
-  renderFiles()
-
-  alert("Carpeta creada exitosamente")
+  const modal = window.bootstrap.Modal(document.getElementById("parcelDetailModal"))
+  modal.show()
 }
 
-function uploadFiles() {
-  const fileInput = document.getElementById("fileUpload")
-  const selectedFolder = document.getElementById("folderSelect").value
+function filterParcels(filter) {
+  currentFilter = filter
 
-  if (fileInput.files.length === 0) {
-    alert("Por favor selecciona al menos un archivo")
-    return
-  }
-
-  Array.from(fileInput.files).forEach((file) => {
-    const fileExtension = file.name.split(".").pop().toLowerCase()
-    let fileType = "document"
-
-    if (["pdf"].includes(fileExtension)) fileType = "pdf"
-    else if (["xlsx", "xls"].includes(fileExtension)) fileType = "excel"
-    else if (["docx", "doc"].includes(fileExtension)) fileType = "word"
-    else if (["jpg", "jpeg", "png", "gif"].includes(fileExtension)) fileType = "image"
-
-    const newFile = {
-      id: fileSystem.files.length + 1,
-      name: file.name,
-      folderId: selectedFolder === "root" ? null : Number.parseInt(selectedFolder),
-      size: formatFileSize(file.size),
-      type: fileType,
-      uploadedAt: new Date().toISOString().split("T")[0],
-      uploadedBy: currentUser.email,
-    }
-
-    fileSystem.files.push(newFile)
+  // Actualizar botones activos
+  document.querySelectorAll(".btn-group .btn").forEach((btn) => {
+    btn.classList.remove("active")
   })
+  event.target.classList.add("active")
 
-  localStorage.setItem("fileSystem", JSON.stringify(fileSystem))
-  fileInput.value = ""
-  renderFiles()
-
-  alert(`${fileInput.files.length} archivo(s) subido(s) exitosamente`)
+  renderParcels()
 }
 
-function formatFileSize(bytes) {
-  if (bytes === 0) return "0 Bytes"
-  const k = 1024
-  const sizes = ["Bytes", "KB", "MB", "GB"]
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-}
-
-function getFileIcon(type) {
-  const icons = {
-    pdf: "bi-file-earmark-pdf text-danger",
-    excel: "bi-file-earmark-excel text-success",
-    word: "bi-file-earmark-word text-primary",
-    image: "bi-file-earmark-image text-info",
-    document: "bi-file-earmark text-secondary",
-  }
-  return icons[type] || icons.document
-}
-
-function navigateToFolder(folderId) {
-  currentFolder = folderId === "root" ? null : Number.parseInt(folderId)
-  renderFiles()
-  updateBreadcrumb()
-}
-
-function updateBreadcrumb() {
-  const breadcrumb = document.getElementById("breadcrumb")
-  const path = []
-  let folder = currentFolder
-
-  while (folder) {
-    const folderObj = fileSystem.folders.find((f) => f.id === folder)
-    if (folderObj) {
-      path.unshift(folderObj)
-      folder = folderObj.parentId
-    } else {
-      break
-    }
-  }
-
-  breadcrumb.innerHTML = `
-    <li class="breadcrumb-item"><a href="#" onclick="navigateToFolder('root')">Inicio</a></li>
-    ${path.map((f) => `<li class="breadcrumb-item active">${f.name}</li>`).join("")}
-  `
-}
-
-function updateFolderSelect() {
-  const select = document.getElementById("folderSelect")
-  if (!select) return
-
-  const folders = fileSystem.folders.filter((f) => f.parentId === currentFolder)
-
-  select.innerHTML = '<option value="root">Raíz</option>'
-  folders.forEach((folder) => {
-    select.innerHTML += `<option value="${folder.id}">${folder.name}</option>`
-  })
-}
-
-function toggleView(mode) {
-  viewMode = mode
-  const container = document.getElementById("filesContainer")
-  const gridBtn = document.getElementById("gridViewBtn")
-  const listBtn = document.getElementById("listViewBtn")
-
-  if (mode === "grid") {
-    container.className = "files-grid-view"
-    gridBtn.classList.add("active")
-    listBtn.classList.remove("active")
-  } else {
-    container.className = "files-list-view"
-    listBtn.classList.add("active")
-    gridBtn.classList.remove("active")
-  }
-
-  renderFiles()
-}
-
-function renderFiles() {
-  const container = document.getElementById("filesContainer")
+function renderActivity() {
+  const container = document.getElementById("activityList")
   if (!container) return
 
-  const folders = fileSystem.folders.filter((f) => f.parentId === currentFolder)
-  const files = fileSystem.files.filter((f) => f.folderId === currentFolder)
+  const userParcels = getUserParcels().slice(0, 5)
 
-  if (folders.length === 0 && files.length === 0) {
-    container.innerHTML = '<p class="text-muted text-center py-4">Esta carpeta está vacía</p>'
+  if (userParcels.length === 0) {
+    container.innerHTML = '<div class="text-center py-3 text-muted"><small>Sin actividad reciente</small></div>'
     return
   }
 
-  let html = ""
-
-  // Renderizar carpetas
-  folders.forEach((folder) => {
-    if (viewMode === "grid") {
-      html += `
-        <div class="file-item file-grid-item" onclick="navigateToFolder(${folder.id})">
-          <div class="file-icon">
-            <i class="bi bi-folder-fill text-warning"></i>
-          </div>
-          <div class="file-info">
-            <div class="file-name">${folder.name}</div>
-            <div class="file-meta">Carpeta</div>
-          </div>
-        </div>
-      `
-    } else {
-      html += `
-        <div class="file-item file-list-item" onclick="navigateToFolder(${folder.id})">
-          <div class="file-icon">
-            <i class="bi bi-folder-fill text-warning"></i>
-          </div>
-          <div class="file-info">
-            <div class="file-name">${folder.name}</div>
-            <div class="file-meta">Carpeta • ${folder.createdAt}</div>
-          </div>
-          <div class="file-actions">
-            <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteFolder(${folder.id})">
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        </div>
-      `
-    }
-  })
-
-  // Renderizar archivos
-  files.forEach((file) => {
-    if (viewMode === "grid") {
-      html += `
-        <div class="file-item file-grid-item">
-          <div class="file-icon">
-            <i class="bi ${getFileIcon(file.type)}"></i>
-          </div>
-          <div class="file-info">
-            <div class="file-name">${file.name}</div>
-            <div class="file-meta">${file.size}</div>
-          </div>
-        </div>
-      `
-    } else {
-      html += `
-        <div class="file-item file-list-item">
-          <div class="file-icon">
-            <i class="bi ${getFileIcon(file.type)}"></i>
-          </div>
-          <div class="file-info">
-            <div class="file-name">${file.name}</div>
-            <div class="file-meta">${file.size} • ${file.uploadedAt} • ${file.uploadedBy}</div>
-          </div>
-          <div class="file-actions">
-            <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadFile(${file.id})">
-              <i class="bi bi-download"></i>
-            </button>
-            ${
-              currentUser && currentUser.role === "admin"
-                ? `
-              <button class="btn btn-sm btn-outline-danger" onclick="deleteFile(${file.id})">
-                <i class="bi bi-trash"></i>
-              </button>
-            `
-                : ""
-            }
-          </div>
-        </div>
-      `
-    }
-  })
-
-  container.innerHTML = html
+  container.innerHTML = userParcels
+    .map((parcel) => {
+      const lastEvent = parcel.timeline[parcel.timeline.length - 1]
+      const statusInfo = getStatusInfo(lastEvent.status)
+      return `
+            <div class="timeline-item">
+                <div class="timeline-dot ${parcel.status === "Entregado" ? "completed" : "active"}">
+                    <i class="bi ${statusInfo.icon}"></i>
+                </div>
+                <div class="timeline-content">
+                    <h6 class="mb-0">${parcel.trackingCode}</h6>
+                    <small class="text-muted">${lastEvent.status} - ${lastEvent.date}</small>
+                </div>
+            </div>
+        `
+    })
+    .join("")
 }
 
-function deleteFolder(folderId) {
-  if (confirm("¿Estás seguro de que quieres eliminar esta carpeta y todo su contenido?")) {
-    // Eliminar archivos de la carpeta
-    fileSystem.files = fileSystem.files.filter((f) => f.folderId !== folderId)
+// ============================================
+// FUNCIONES DE ADMIN
+// ============================================
 
-    // Eliminar subcarpetas recursivamente
-    const subfolders = fileSystem.folders.filter((f) => f.parentId === folderId)
-    subfolders.forEach((subfolder) => deleteFolder(subfolder.id))
+function toggleAdminView() {
+  const section = document.getElementById("adminAllParcelsSection")
+  section.style.display = section.style.display === "none" ? "block" : "none"
 
-    // Eliminar la carpeta
-    fileSystem.folders = fileSystem.folders.filter((f) => f.id !== folderId)
-
-    localStorage.setItem("fileSystem", JSON.stringify(fileSystem))
-    renderFiles()
-    updateFolderSelect()
+  if (section.style.display === "block") {
+    renderAdminParcelsTable()
   }
 }
 
-function deleteFile(fileId) {
-  if (confirm("¿Estás seguro de que quieres eliminar este archivo?")) {
-    fileSystem.files = fileSystem.files.filter((f) => f.id !== fileId)
-    localStorage.setItem("fileSystem", JSON.stringify(fileSystem))
-    renderFiles()
-  }
+function hideAdminView() {
+  document.getElementById("adminAllParcelsSection").style.display = "none"
 }
 
-function downloadFile(fileId) {
-  const file = fileSystem.files.find((f) => f.id === fileId)
-  if (file) {
-    alert(`Descargando: ${file.name}\n(En una aplicación real, esto iniciaría la descarga del archivo)`)
-  }
+function renderAdminParcelsTable() {
+  const tbody = document.getElementById("adminParcelsTable")
+  const allParcels = getAllParcels()
+
+  tbody.innerHTML = allParcels
+    .map((parcel) => {
+      const user = users.find((u) => u.id === parcel.userId)
+      const statusInfo = getStatusInfo(parcel.status)
+      return `
+            <tr>
+                <td><span class="parcel-id">${parcel.trackingCode}</span></td>
+                <td>${user ? user.name : "Desconocido"}</td>
+                <td>${parcel.origin}</td>
+                <td>${parcel.destination}</td>
+                <td>
+                    <span class="status-badge status-${parcel.status.toLowerCase().replace(" ", "")}">
+                        <i class="bi ${statusInfo.icon}"></i> ${parcel.status}
+                    </span>
+                </td>
+                <td>${parcel.estimatedTime}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="showParcelDetail(${parcel.id})">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="openEditStatusModal(${parcel.id})">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                </td>
+            </tr>
+        `
+    })
+    .join("")
 }
 
-// Event listeners
+function openEditStatusModal(parcelId) {
+  const parcel = getParcelById(parcelId)
+  if (!parcel) return
+
+  document.getElementById("editParcelId").value = parcel.id
+  document.getElementById("editParcelCode").value = parcel.trackingCode
+  document.getElementById("editStatus").value = parcel.status
+
+  const modal = window.bootstrap.Modal(document.getElementById("editStatusModal"))
+  modal.show()
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+
 document.addEventListener("DOMContentLoaded", () => {
   // Cargar datos del localStorage
   const storedUsers = localStorage.getItem("users")
@@ -465,12 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
     parcels = JSON.parse(storedParcels)
   }
 
-  const storedFileSystem = localStorage.getItem("fileSystem")
-  if (storedFileSystem) {
-    fileSystem = JSON.parse(storedFileSystem)
-  }
-
-  // Verificar autenticación en páginas protegidas
+  // Verificar autenticacion en dashboard
   if (window.location.pathname.includes("dashboard.html")) {
     if (!checkAuth()) {
       window.location.href = "login.html"
@@ -478,15 +585,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("userName").textContent = currentUser.name
+    document.getElementById("userNameGreeting").textContent = currentUser.name
 
     if (currentUser.role === "admin") {
-      document.getElementById("fileManagementSection").style.display = "block"
+      document.getElementById("adminPanel").style.display = "block"
+      document.getElementById("userRoleBadge").style.display = "inline-block"
     }
 
     updateStats()
     renderParcels()
-    updateFolderSelect()
-    renderFiles()
+    renderActivity()
   }
 
   // Formulario de login
@@ -496,11 +604,13 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault()
       const email = document.getElementById("email").value
       const password = document.getElementById("password").value
+      const errorDiv = document.getElementById("errorMessage")
 
       if (login(email, password)) {
         window.location.href = "dashboard.html"
       } else {
-        alert("Credenciales incorrectas")
+        errorDiv.textContent = "Credenciales incorrectas. Intenta de nuevo."
+        errorDiv.classList.remove("d-none")
       }
     })
   }
@@ -514,17 +624,33 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("email").value
       const password = document.getElementById("password").value
       const confirmPassword = document.getElementById("confirmPassword").value
+      const errorDiv = document.getElementById("errorMessage")
+      const successDiv = document.getElementById("successMessage")
+
+      errorDiv.classList.add("d-none")
+      successDiv.classList.add("d-none")
 
       if (password !== confirmPassword) {
-        alert("Las contraseñas no coinciden")
+        errorDiv.textContent = "Las contrasenas no coinciden"
+        errorDiv.classList.remove("d-none")
+        return
+      }
+
+      if (password.length < 6) {
+        errorDiv.textContent = "La contrasena debe tener al menos 6 caracteres"
+        errorDiv.classList.remove("d-none")
         return
       }
 
       if (register(name, email, password)) {
-        alert("Registro exitoso. Ahora puedes iniciar sesión.")
-        window.location.href = "login.html"
+        successDiv.textContent = "Cuenta creada exitosamente. Redirigiendo..."
+        successDiv.classList.remove("d-none")
+        setTimeout(() => {
+          window.location.href = "login.html"
+        }, 1500)
       } else {
-        alert("El email ya está registrado")
+        errorDiv.textContent = "El email ya esta registrado"
+        errorDiv.classList.remove("d-none")
       }
     })
   }
@@ -532,52 +658,128 @@ document.addEventListener("DOMContentLoaded", () => {
   // Formulario de nueva encomienda
   const parcelForm = document.getElementById("parcelForm")
   if (parcelForm) {
+    // Preview de tiempo estimado al cambiar origen/destino
+    const originSelect = document.getElementById("origin")
+    const destinationSelect = document.getElementById("destination")
+
+    const updatePreview = () => {
+      const origin = originSelect.value
+      const destination = destinationSelect.value
+      const previewDiv = document.getElementById("estimatedTimePreview")
+
+      if (origin && destination && origin !== destination) {
+        const distance = getDistance(origin, destination)
+        const time = calculateEstimatedTime(distance)
+
+        document.getElementById("previewTime").textContent = time
+        document.getElementById("previewDistance").textContent = distance
+        previewDiv.style.display = "block"
+      } else {
+        previewDiv.style.display = "none"
+      }
+    }
+
+    originSelect.addEventListener("change", updatePreview)
+    destinationSelect.addEventListener("change", updatePreview)
+
     parcelForm.addEventListener("submit", (e) => {
       e.preventDefault()
-      const recipient = document.getElementById("recipient").value
-      const address = document.getElementById("address").value
-      const weight = document.getElementById("weight").value
-      const status = document.getElementById("status").value
 
-      if (createParcel(recipient, address, weight, status)) {
-        alert("Encomienda creada exitosamente")
+      const data = {
+        description: document.getElementById("description").value,
+        sender: document.getElementById("sender").value,
+        recipient: document.getElementById("recipient").value,
+        origin: document.getElementById("origin").value,
+        destination: document.getElementById("destination").value,
+        address: document.getElementById("address").value,
+        weight: document.getElementById("weight").value,
+      }
+
+      const newParcel = createParcel(data)
+
+      if (newParcel) {
+        // Cerrar modal
+        const modal = window.bootstrap.Modal.getInstance(document.getElementById("newParcelModal"))
+        modal.hide()
+
+        // Limpiar formulario
         parcelForm.reset()
+        document.getElementById("estimatedTimePreview").style.display = "none"
+
+        // Actualizar UI
         updateStats()
         renderParcels()
-      } else {
-        alert("Error al crear la encomienda")
+        renderActivity()
+
+        // Mostrar mensaje de exito
+        alert(
+          `Encomienda creada exitosamente!\n\nCodigo de seguimiento: ${newParcel.trackingCode}\nTiempo estimado: ${newParcel.estimatedTime}`,
+        )
       }
     })
   }
 
-  // Event listeners para el sistema de archivos
-  const folderForm = document.getElementById("folderForm")
-  if (folderForm) {
-    folderForm.addEventListener("submit", (e) => {
+  // Formulario de editar estado (admin)
+  const editStatusForm = document.getElementById("editStatusForm")
+  if (editStatusForm) {
+    editStatusForm.addEventListener("submit", (e) => {
       e.preventDefault()
-      createFolder()
+
+      const parcelId = Number.parseInt(document.getElementById("editParcelId").value)
+      const newStatus = document.getElementById("editStatus").value
+
+      if (updateParcelStatus(parcelId, newStatus)) {
+        const modal = window.bootstrap.Modal.getInstance(document.getElementById("editStatusModal"))
+        modal.hide()
+
+        updateStats()
+        renderParcels()
+        renderActivity()
+        renderAdminParcelsTable()
+
+        alert("Estado actualizado exitosamente")
+      }
     })
   }
 
-  const fileUploadForm = document.getElementById("fileUploadForm")
-  if (fileUploadForm) {
-    fileUploadForm.addEventListener("submit", (e) => {
+  // Rastreo rapido
+  const quickTrackForm = document.getElementById("quickTrackForm")
+  if (quickTrackForm) {
+    quickTrackForm.addEventListener("submit", (e) => {
       e.preventDefault()
-      uploadFiles()
-    })
-  }
+      const code = document.getElementById("quickTrackCode").value.trim().toUpperCase()
+      const resultDiv = document.getElementById("quickTrackResult")
 
-  const gridViewBtn = document.getElementById("gridViewBtn")
-  if (gridViewBtn) {
-    gridViewBtn.addEventListener("click", () => {
-      toggleView("grid")
-    })
-  }
+      const parcel = parcels.find((p) => p.trackingCode === code)
 
-  const listViewBtn = document.getElementById("listViewBtn")
-  if (listViewBtn) {
-    listViewBtn.addEventListener("click", () => {
-      toggleView("list")
+      if (parcel) {
+        const statusInfo = getStatusInfo(parcel.status)
+        resultDiv.innerHTML = `
+                    <div class="card border-0 bg-light">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="parcel-id">${parcel.trackingCode}</span>
+                                <span class="status-badge status-${parcel.status.toLowerCase().replace(" ", "")}">
+                                    ${parcel.status}
+                                </span>
+                            </div>
+                            <small class="text-muted d-block">${parcel.origin} → ${parcel.destination}</small>
+                            <small class="text-success d-block mt-1">
+                                <i class="bi bi-clock me-1"></i>${parcel.estimatedTime}
+                            </small>
+                            <button class="btn btn-sm btn-primary mt-2 w-100" onclick="showParcelDetail(${parcel.id})">
+                                Ver Detalles
+                            </button>
+                        </div>
+                    </div>
+                `
+      } else {
+        resultDiv.innerHTML = `
+                    <div class="alert alert-warning mb-0 py-2">
+                        <small><i class="bi bi-exclamation-triangle me-1"></i>No encontrada</small>
+                    </div>
+                `
+      }
     })
   }
 })
