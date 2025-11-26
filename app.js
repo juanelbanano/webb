@@ -3,7 +3,7 @@
 // Colombia Edition 2025
 // ============================================
 
-// <CHANGE> Ciudades de Colombia con barrios actualizados
+// Ciudades de Colombia con barrios actualizados
 const colombiaCities = {
   Bogota: {
     lat: 4.711,
@@ -235,7 +235,7 @@ const parcelStatuses = {
   Entregado: { icon: "bi-check-circle-fill", progress: 100, color: "success" },
 }
 
-// <CHANGE> Datos demo actualizados a 2025
+// Datos demo actualizados a 2025
 let users = [
   { id: 1, name: "Administrador", email: "admin@techlog.com", password: "admin123", role: "admin" },
   { id: 2, name: "Usuario Demo", email: "user@demo.com", password: "demo123", role: "user" },
@@ -307,16 +307,18 @@ let previewMap = null
 let detailMap = null
 let allRoutesMap = null
 
+// Leaflet and Bootstrap imports
+const L = window.L
+const bootstrap = window.bootstrap
+
 // ============================================
 // FUNCIONES DE UTILIDAD
 // ============================================
 
 function getDistance(origin, destination) {
   if (origin === destination) return 0
-
   const key1 = `${origin}-${destination}`
   const key2 = `${destination}-${origin}`
-
   return cityDistances[key1] || cityDistances[key2] || Math.floor(Math.random() * 500 + 200)
 }
 
@@ -356,12 +358,15 @@ function getCityCoordinates(city) {
 // ============================================
 
 function login(email, password) {
+  console.log("[v0] Intentando login con:", email)
   const user = users.find((u) => u.email === email && u.password === password)
   if (user) {
     currentUser = user
     localStorage.setItem("currentUser", JSON.stringify(user))
+    console.log("[v0] Login exitoso:", user.name)
     return true
   }
+  console.log("[v0] Login fallido")
   return false
 }
 
@@ -369,7 +374,6 @@ function register(name, email, password) {
   if (users.find((u) => u.email === email)) {
     return false
   }
-
   const newUser = {
     id: users.length + 1,
     name,
@@ -377,7 +381,6 @@ function register(name, email, password) {
     password,
     role: "user",
   }
-
   users.push(newUser)
   localStorage.setItem("users", JSON.stringify(users))
   return true
@@ -393,8 +396,10 @@ function checkAuth() {
   const stored = localStorage.getItem("currentUser")
   if (stored) {
     currentUser = JSON.parse(stored)
+    console.log("[v0] Usuario autenticado:", currentUser.name)
     return true
   }
+  console.log("[v0] No hay usuario autenticado")
   return false
 }
 
@@ -408,11 +413,8 @@ function createParcel(data) {
   const distance = getDistance(data.origin, data.destination)
   const estimatedTime = calculateEstimatedTime(distance)
   const trackingCode = generateTrackingCode()
-
   const originCoords = getCityCoordinates(data.origin)
-  const destCoords = getCityCoordinates(data.destination)
 
-  // <CHANGE> Fecha formateada correctamente a 2025
   const now = new Date()
   const dateStr = now.toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" })
   const timeStr = now.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" })
@@ -459,15 +461,12 @@ function createParcel(data) {
 
 function getUserParcels(filter = "all") {
   if (!currentUser) return []
-
   let userParcels = parcels.filter((p) => p.userId === currentUser.id)
-
   if (filter === "active") {
     userParcels = userParcels.filter((p) => p.status !== "Entregado")
   } else if (filter === "delivered") {
     userParcels = userParcels.filter((p) => p.status === "Entregado")
   }
-
   return userParcels.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 }
 
@@ -497,7 +496,6 @@ function updateParcelStatus(parcelId, newStatus) {
       location: `${location} - Actualizado`,
     })
 
-    // Actualizar historial de ruta
     if (newStatus === "Entregado") {
       const destCoords = getCityCoordinates(parcel.destination)
       parcel.routeHistory.push({
@@ -523,7 +521,6 @@ function initPreviewMap(origin, destination) {
   const mapContainer = document.getElementById("previewMap")
   if (!mapContainer) return
 
-  // Destruir mapa existente si hay
   if (previewMap) {
     previewMap.remove()
     previewMap = null
@@ -531,8 +528,6 @@ function initPreviewMap(origin, destination) {
 
   const originCoords = getCityCoordinates(origin)
   const destCoords = getCityCoordinates(destination)
-
-  // Calcular centro del mapa
   const centerLat = (originCoords.lat + destCoords.lat) / 2
   const centerLng = (originCoords.lng + destCoords.lng) / 2
 
@@ -542,14 +537,12 @@ function initPreviewMap(origin, destination) {
     attribution: "© OpenStreetMap contributors",
   }).addTo(previewMap)
 
-  // Marcador de origen
   const originIcon = L.divIcon({
     className: "custom-marker",
     html: '<div style="background: #1a56db; color: white; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="bi bi-geo-alt-fill"></i></div>',
     iconSize: [30, 30],
   })
 
-  // Marcador de destino
   const destIcon = L.divIcon({
     className: "custom-marker",
     html: '<div style="background: #10b981; color: white; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="bi bi-flag-fill"></i></div>',
@@ -564,7 +557,6 @@ function initPreviewMap(origin, destination) {
     .addTo(previewMap)
     .bindPopup(`<strong>Destino:</strong> ${destination}`)
 
-  // Linea del recorrido
   L.polyline(
     [
       [originCoords.lat, originCoords.lng],
@@ -577,7 +569,6 @@ function initPreviewMap(origin, destination) {
     },
   ).addTo(previewMap)
 
-  // Ajustar vista a los marcadores
   previewMap.fitBounds(
     [
       [originCoords.lat, originCoords.lng],
@@ -593,11 +584,8 @@ function initDetailMap(parcel) {
 
   const originCoords = getCityCoordinates(parcel.origin)
   const destCoords = getCityCoordinates(parcel.destination)
-
-  // Calcular posicion actual basada en progreso
   const currentLat = originCoords.lat + (destCoords.lat - originCoords.lat) * (parcel.progress / 100)
   const currentLng = originCoords.lng + (destCoords.lng - originCoords.lng) * (parcel.progress / 100)
-
   const centerLat = (originCoords.lat + destCoords.lat) / 2
   const centerLng = (originCoords.lng + destCoords.lng) / 2
 
@@ -611,7 +599,6 @@ function initDetailMap(parcel) {
     attribution: "© OpenStreetMap",
   }).addTo(detailMap)
 
-  // Iconos personalizados
   const originIcon = L.divIcon({
     className: "custom-marker",
     html: '<div style="background: #1a56db; color: white; padding: 10px; border-radius: 50%; font-size: 16px;"><i class="bi bi-geo-alt-fill"></i></div>',
@@ -626,11 +613,10 @@ function initDetailMap(parcel) {
 
   const truckIcon = L.divIcon({
     className: "custom-marker truck-pulse",
-    html: '<div style="background: #f59e0b; color: white; padding: 10px; border-radius: 50%; font-size: 16px; animation: pulse 2s infinite;"><i class="bi bi-truck"></i></div>',
+    html: '<div style="background: #f59e0b; color: white; padding: 10px; border-radius: 50%; font-size: 16px;"><i class="bi bi-truck"></i></div>',
     iconSize: [40, 40],
   })
 
-  // Marcadores
   L.marker([originCoords.lat, originCoords.lng], { icon: originIcon })
     .addTo(detailMap)
     .bindPopup(`<strong>Origen:</strong> ${parcel.origin}`)
@@ -639,14 +625,12 @@ function initDetailMap(parcel) {
     .addTo(detailMap)
     .bindPopup(`<strong>Destino:</strong> ${parcel.destination}<br><small>${parcel.destinationBarrio}</small>`)
 
-  // Mostrar camion solo si no esta entregado
   if (parcel.progress < 100) {
     L.marker([currentLat, currentLng], { icon: truckIcon })
       .addTo(detailMap)
       .bindPopup(`<strong>Ubicacion actual</strong><br>Progreso: ${parcel.progress}%`)
   }
 
-  // Linea completa (gris)
   L.polyline(
     [
       [originCoords.lat, originCoords.lng],
@@ -658,7 +642,6 @@ function initDetailMap(parcel) {
     },
   ).addTo(detailMap)
 
-  // Linea de progreso (verde)
   L.polyline(
     [
       [originCoords.lat, originCoords.lng],
@@ -679,12 +662,10 @@ function initDetailMap(parcel) {
   )
 }
 
-// <CHANGE> Funcion para mostrar mapa de todos los recorridos (Admin)
 function showAllRoutesMap() {
   const modal = new bootstrap.Modal(document.getElementById("allRoutesMapModal"))
   modal.show()
 
-  // Esperar a que el modal se muestre completamente
   document.getElementById("allRoutesMapModal").addEventListener(
     "shown.bs.modal",
     () => {
@@ -702,7 +683,6 @@ function initAllRoutesMap() {
     allRoutesMap.remove()
   }
 
-  // Centro de Colombia
   allRoutesMap = L.map("allRoutesMap").setView([4.5709, -74.2973], 6)
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -715,12 +695,9 @@ function initAllRoutesMap() {
     const originCoords = getCityCoordinates(parcel.origin)
     const destCoords = getCityCoordinates(parcel.destination)
     const color = colors[index % colors.length]
-
-    // Calcular posicion actual
     const currentLat = originCoords.lat + (destCoords.lat - originCoords.lat) * (parcel.progress / 100)
     const currentLng = originCoords.lng + (destCoords.lng - originCoords.lng) * (parcel.progress / 100)
 
-    // Linea de ruta
     L.polyline(
       [
         [originCoords.lat, originCoords.lng],
@@ -733,7 +710,6 @@ function initAllRoutesMap() {
       },
     ).addTo(allRoutesMap)
 
-    // Marcador de origen
     const originIcon = L.divIcon({
       className: "custom-marker",
       html: `<div style="background: ${color}; color: white; padding: 6px; border-radius: 50%; font-size: 12px;"><i class="bi bi-geo-alt-fill"></i></div>`,
@@ -744,7 +720,6 @@ function initAllRoutesMap() {
       .addTo(allRoutesMap)
       .bindPopup(`<strong>${parcel.trackingCode}</strong><br>Origen: ${parcel.origin}`)
 
-    // Marcador de destino
     const destIcon = L.divIcon({
       className: "custom-marker",
       html: `<div style="background: ${color}; color: white; padding: 6px; border-radius: 50%; font-size: 12px;"><i class="bi bi-flag-fill"></i></div>`,
@@ -757,7 +732,6 @@ function initAllRoutesMap() {
         `<strong>${parcel.trackingCode}</strong><br>Destino: ${parcel.destination}<br>Barrio: ${parcel.destinationBarrio}`,
       )
 
-    // Marcador de posicion actual si no esta entregado
     if (parcel.progress < 100) {
       const user = users.find((u) => u.id === parcel.userId)
       const truckIcon = L.divIcon({
@@ -788,16 +762,24 @@ function updateStats() {
   const transit = userParcels.filter((p) => p.status === "En Transito" || p.status === "En Reparto").length
   const processing = userParcels.filter((p) => p.status === "Procesando" || p.status === "Recolectado").length
 
-  document.getElementById("totalParcels").textContent = userParcels.length
-  document.getElementById("deliveredParcels").textContent = delivered
-  document.getElementById("pendingParcels").textContent = transit
-  document.getElementById("processingParcels").textContent = processing
+  const totalEl = document.getElementById("totalParcels")
+  const deliveredEl = document.getElementById("deliveredParcels")
+  const pendingEl = document.getElementById("pendingParcels")
+  const processingEl = document.getElementById("processingParcels")
 
-  // Stats de admin
+  if (totalEl) totalEl.textContent = userParcels.length
+  if (deliveredEl) deliveredEl.textContent = delivered
+  if (pendingEl) pendingEl.textContent = transit
+  if (processingEl) processingEl.textContent = processing
+
   if (currentUser && currentUser.role === "admin") {
-    document.getElementById("totalUsers").textContent = users.length
-    document.getElementById("totalAllParcels").textContent = parcels.length
-    document.getElementById("activeDeliveries").textContent = parcels.filter((p) => p.status !== "Entregado").length
+    const totalUsersEl = document.getElementById("totalUsers")
+    const totalAllEl = document.getElementById("totalAllParcels")
+    const activeEl = document.getElementById("activeDeliveries")
+
+    if (totalUsersEl) totalUsersEl.textContent = users.length
+    if (totalAllEl) totalAllEl.textContent = parcels.length
+    if (activeEl) activeEl.textContent = parcels.filter((p) => p.status !== "Entregado").length
   }
 }
 
@@ -933,7 +915,6 @@ function showParcelDetail(parcelId) {
       </div>
       
       <div class="col-lg-7">
-        <!-- Mapa del recorrido -->
         <div class="card border-0 bg-light mb-4">
           <div class="card-header bg-transparent">
             <h6 class="mb-0"><i class="bi bi-map me-2"></i>Mapa del Recorrido</h6>
@@ -971,7 +952,6 @@ function showParcelDetail(parcelId) {
   const modal = new bootstrap.Modal(document.getElementById("parcelDetailModal"))
   modal.show()
 
-  // Inicializar mapa despues de mostrar modal
   document.getElementById("parcelDetailModal").addEventListener(
     "shown.bs.modal",
     () => {
@@ -983,13 +963,10 @@ function showParcelDetail(parcelId) {
 
 function filterParcels(filter) {
   currentFilter = filter
-
-  // Actualizar botones activos
   document.querySelectorAll(".btn-group .btn").forEach((btn) => {
     btn.classList.remove("active")
   })
   event.target.classList.add("active")
-
   renderParcels()
 }
 
@@ -1030,7 +1007,6 @@ function renderActivity() {
 function toggleAdminView() {
   const section = document.getElementById("adminAllParcelsSection")
   section.style.display = section.style.display === "none" ? "block" : "none"
-
   if (section.style.display === "block") {
     renderAdminParcelsTable()
   }
@@ -1117,10 +1093,21 @@ function updateBarriosSelect(citySelectId, barrioSelectId) {
 }
 
 // ============================================
+// RASTREO PUBLICO (INDEX)
+// ============================================
+
+function trackParcel(code) {
+  const parcel = parcels.find((p) => p.trackingCode === code.toUpperCase())
+  return parcel || null
+}
+
+// ============================================
 // EVENT LISTENERS
 // ============================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("[v0] DOM Cargado - Inicializando app...")
+
   // Cargar datos del localStorage
   const storedUsers = localStorage.getItem("users")
   if (storedUsers) {
@@ -1132,19 +1119,31 @@ document.addEventListener("DOMContentLoaded", () => {
     parcels = JSON.parse(storedParcels)
   }
 
+  const currentPath = window.location.pathname
+  console.log("[v0] Ruta actual:", currentPath)
+
   // Verificar autenticacion en dashboard
-  if (window.location.pathname.includes("dashboard.html")) {
+  if (currentPath.includes("dashboard")) {
+    console.log("[v0] En dashboard, verificando auth...")
     if (!checkAuth()) {
+      console.log("[v0] No autenticado, redirigiendo a login")
       window.location.href = "login.html"
       return
     }
 
-    document.getElementById("userName").textContent = currentUser.name
-    document.getElementById("userNameGreeting").textContent = currentUser.name
+    console.log("[v0] Autenticado como:", currentUser.name)
+
+    const userNameEl = document.getElementById("userName")
+    const userNameGreetingEl = document.getElementById("userNameGreeting")
+
+    if (userNameEl) userNameEl.textContent = currentUser.name
+    if (userNameGreetingEl) userNameGreetingEl.textContent = currentUser.name
 
     if (currentUser.role === "admin") {
-      document.getElementById("adminPanel").style.display = "block"
-      document.getElementById("userRoleBadge").style.display = "inline-block"
+      const adminPanel = document.getElementById("adminPanel")
+      const userRoleBadge = document.getElementById("userRoleBadge")
+      if (adminPanel) adminPanel.style.display = "block"
+      if (userRoleBadge) userRoleBadge.style.display = "inline-block"
     }
 
     updateStats()
@@ -1163,15 +1162,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // Formulario de login
   const loginForm = document.getElementById("loginForm")
   if (loginForm) {
+    console.log("[v0] Formulario de login encontrado")
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault()
+      console.log("[v0] Submit de login")
+
       const email = document.getElementById("email").value
       const password = document.getElementById("password").value
       const errorDiv = document.getElementById("errorMessage")
 
+      console.log("[v0] Intentando login con:", email)
+
       if (login(email, password)) {
+        console.log("[v0] Login exitoso, redirigiendo a dashboard")
         window.location.href = "dashboard.html"
       } else {
+        console.log("[v0] Login fallido")
         errorDiv.textContent = "Credenciales incorrectas. Intenta de nuevo."
         errorDiv.classList.remove("d-none")
       }
@@ -1237,7 +1243,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("previewDistance").textContent = distance
         previewDiv.style.display = "block"
 
-        // Inicializar mapa de preview
         setTimeout(() => {
           initPreviewMap(origin, destination)
         }, 100)
@@ -1269,22 +1274,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const newParcel = createParcel(data)
 
       if (newParcel) {
-        // Cerrar modal
         const modal = bootstrap.Modal.getInstance(document.getElementById("newParcelModal"))
         modal.hide()
-
-        // Limpiar formulario
         parcelForm.reset()
         document.getElementById("estimatedTimePreview").style.display = "none"
 
-        // Actualizar UI
         updateStats()
         renderParcels()
         renderActivity()
 
-        // Mostrar mensaje de exito
         alert(
-          `Encomienda creada exitosamente!\n\nCodigo de seguimiento: ${newParcel.trackingCode}\nTiempo estimado: ${newParcel.estimatedTime}\nDestino: ${newParcel.destination}, ${newParcel.destinationBarrio}`
+          `Encomienda creada exitosamente!\n\nCodigo de seguimiento: ${newParcel.trackingCode}\nTiempo estimado: ${newParcel.estimatedTime}\nDestino: ${newParcel.destination}, ${newParcel.destinationBarrio}`,
         )
       }
     })
@@ -1313,7 +1313,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  // Rastreo rapido
+  // Rastreo rapido en dashboard
   const quickTrackForm = document.getElementById("quickTrackForm")
   if (quickTrackForm) {
     quickTrackForm.addEventListener("submit", (e) => {
@@ -1337,3 +1337,87 @@ document.addEventListener("DOMContentLoaded", () => {
               <small class="text-muted d-block">${parcel.origin} → ${parcel.destination}</small>
               <small class="text-muted d-block">${parcel.destinationBarrio || ""}</small>
               <small class="text-success d-block mt-1">
+                <i class="bi bi-clock me-1"></i>${parcel.estimatedTime}
+              </small>
+              <button class="btn btn-sm btn-primary mt-2 w-100" onclick="showParcelDetail(${parcel.id})">
+                Ver detalles
+              </button>
+            </div>
+          </div>
+        `
+      } else {
+        resultDiv.innerHTML = `
+          <div class="alert alert-warning mb-0">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            No se encontro ninguna encomienda con ese codigo.
+          </div>
+        `
+      }
+    })
+  }
+
+  // Rastreo publico en index
+  const publicTrackForm = document.getElementById("publicTrackForm")
+  if (publicTrackForm) {
+    publicTrackForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+      const code = document.getElementById("publicTrackCode").value.trim().toUpperCase()
+      const resultDiv = document.getElementById("publicTrackResult")
+
+      const parcel = trackParcel(code)
+
+      if (parcel) {
+        const statusInfo = getStatusInfo(parcel.status)
+        resultDiv.innerHTML = `
+          <div class="card border-0 shadow-lg mt-4">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="parcel-id">${parcel.trackingCode}</span>
+                <span class="status-badge status-${parcel.status.toLowerCase().replace(" ", "")}">
+                  <i class="bi ${statusInfo.icon}"></i> ${parcel.status}
+                </span>
+              </div>
+              <h5 class="fw-bold mb-3">${parcel.description}</h5>
+              <div class="row g-3 mb-3">
+                <div class="col-6">
+                  <div class="bg-light rounded-3 p-3">
+                    <small class="text-muted d-block">Origen</small>
+                    <strong>${parcel.origin}</strong>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="bg-light rounded-3 p-3">
+                    <small class="text-muted d-block">Destino</small>
+                    <strong>${parcel.destination}</strong>
+                    <small class="d-block text-muted">${parcel.destinationBarrio}</small>
+                  </div>
+                </div>
+              </div>
+              <div class="estimated-time-card">
+                <small class="text-muted">Tiempo Estimado</small>
+                <div class="time-display">${parcel.estimatedTime}</div>
+                <div class="time-label">Distancia: ${parcel.distance} km</div>
+              </div>
+              <div class="mt-3">
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-${statusInfo.color}" style="width: ${parcel.progress}%"></div>
+                </div>
+                <small class="text-muted">Progreso: ${parcel.progress}%</small>
+              </div>
+            </div>
+          </div>
+        `
+      } else {
+        resultDiv.innerHTML = `
+          <div class="alert alert-warning mt-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            No se encontro ninguna encomienda con el codigo <strong>${code}</strong>.
+            <br><small>Verifica que el codigo sea correcto (ej: TL-2025-0001)</small>
+          </div>
+        `
+      }
+    })
+  }
+
+  console.log("[v0] App inicializada correctamente")
+})
