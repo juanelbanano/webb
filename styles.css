@@ -1014,3 +1014,8 @@ footer a:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-500);
 }
+
+/* Google Drive Section */
+.ratio-16x9 iframe {
+  border-radius: 12px;
+}
